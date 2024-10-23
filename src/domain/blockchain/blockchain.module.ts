@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { BlockEntity } from './domain/blockchain.domain';
+import { BlockEntity } from './domain/blockchain.entity';
 import { BlockChainService } from './blockchain.service';
 import { TransactionEntity } from './domain/transaction.entity';
 import { TransactionReceiptEntity } from './domain/transaction-receipt.entity';

@@ -1,6 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { BlockEntity } from './domain/blockchain.domain';
+import { BlockEntity } from './domain/blockchain.entity';
 import { Repository } from 'typeorm';
 import { ethers } from 'ethers';
 import { ConfigService } from '@nestjs/config';
@@ -73,7 +78,80 @@ export class BlockChainService {
         console.log('Latest block and transactions saved');
       } catch (err) {
         console.error('Error fetching block:', err);
+        throw new InternalServerErrorException();
       }
     }, 15000);
+  }
+
+  async blockRead(blockHash: string): Promise<any> {
+    try {
+      const findBlock: any | undefined = await this.blockRepository.findOne({
+        where: {
+          blockHash,
+        },
+        relations: [
+          'transactions',
+          'transactions.receipt',
+          'transactions.receipt.logs',
+        ],
+      });
+      if (!findBlock) {
+        throw new NotFoundException();
+      }
+      return findBlock;
+    } catch (err) {
+      console.log(err);
+      throw new InternalServerErrorException();
+    }
+  }
+  async receiptRead(transactionHash: string): Promise<any> {
+    try {
+      const findTransaction = await this.transactionRepository.findOne({
+        where: { transactionHash },
+      });
+
+      if (!findTransaction) {
+        throw new NotFoundException();
+      }
+      const findReceipt = await this.receiptRepository.findOne({
+        where: { transaction: { id: findTransaction.id } },
+        relations: ['logs'],
+      });
+      if (!findReceipt) {
+        throw new NotFoundException();
+      }
+      return findReceipt;
+    } catch (err) {
+      console.error(err);
+    }
+  }
+  async findReceiptByFromOrTo(option: string, address: string): Promise<any> {
+    let findReceipt: any;
+    let findTransaction: any;
+    if (option == 'to') {
+      findTransaction = await this.transactionRepository.findOne({
+        where: { toAddress: address },
+      });
+      if (!findTransaction) {
+        throw new NotFoundException();
+      }
+    } else if (option == 'from') {
+      findTransaction = await this.transactionRepository.findOne({
+        where: { fromAddress: address },
+      });
+      if (!findTransaction) {
+        throw new NotFoundException();
+      }
+    } else {
+      throw new BadRequestException();
+    }
+    findReceipt = await this.receiptRepository.findOne({
+      where: { transaction: { id: findTransaction.id } },
+      relations: ['logs'],
+    });
+    if (!findReceipt) {
+      throw new NotFoundException();
+    }
+    return findReceipt;
   }
 }
