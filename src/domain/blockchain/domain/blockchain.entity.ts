@@ -1,4 +1,10 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { TransactionEntity } from './transaction.entity';
 
 @Entity('Block')
@@ -12,6 +18,6 @@ export class BlockEntity {
   @Column()
   blockHash: string;
 
-  @OneToMany(() => TransactionEntity, (transaction) => transaction)
-  transactions: TransactionEntity;
+  @OneToMany(() => TransactionEntity, (transaction) => transaction.block)
+  transactions: TransactionEntity[];
 }
