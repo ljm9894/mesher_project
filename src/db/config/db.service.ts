@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
-import { BlockEntity } from 'src/domain/blockchain/domain/blockchain.domain';
+import { BlockEntity } from 'src/domain/blockchain/domain/blockchain.entity';
 import { LogEntity } from 'src/domain/blockchain/domain/log.entity';
 import { TransactionReceiptEntity } from 'src/domain/blockchain/domain/transaction-receipt.entity';
 import { TransactionEntity } from 'src/domain/blockchain/domain/transaction.entity';
