@@ -1,11 +1,12 @@
 import {
   Column,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { BlockEntity } from './blockchain.domain';
+import { BlockEntity } from './blockchain.entity';
 import { TransactionReceiptEntity } from './transaction-receipt.entity';
 
 @Entity('transaction')
@@ -21,7 +22,7 @@ export class TransactionEntity {
 
   @Column()
   toAddress: string;
-  
+
   @Column()
   value: string;
 

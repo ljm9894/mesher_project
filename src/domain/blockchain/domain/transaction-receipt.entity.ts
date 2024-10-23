@@ -1,6 +1,7 @@
 import {
   Column,
   Entity,
+  JoinColumn,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -23,6 +24,7 @@ export class TransactionReceiptEntity {
   contractAddress: string;
 
   @OneToOne(() => TransactionEntity, (transaction) => transaction.receipt)
+  @JoinColumn()
   transaction: TransactionEntity;
 
   @OneToMany(() => LogEntity, (log) => log.receipt)
