@@ -38,8 +38,6 @@ export class BlockChainService {
       blockNumber: block.number,
       blockHash: block.hash,
     });
-    // console.log(block);
-    // console.log(block.transactions);
     await this.blockRepository.save(blockEntity);
     for (const txHash of block.transactions) {
       const tx = await this.provider.getTransaction(txHash);
@@ -107,7 +105,6 @@ export class BlockChainService {
   }
   async receiptRead(transactionHash: string): Promise<any> {
     try {
-      throw new Error('테스트용 에러');
       const findTransaction = await this.transactionRepository.findOne({
         where: { transactionHash },
       });
