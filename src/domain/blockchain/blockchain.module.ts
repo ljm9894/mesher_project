@@ -18,5 +18,6 @@ import { BlockChainController } from './blockchain.controller';
   ],
   controllers: [BlockChainController],
   providers: [BlockChainService],
+  exports: [BlockChainService],
 })
 export class BlockchainModule {}

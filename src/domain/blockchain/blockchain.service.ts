@@ -12,6 +12,7 @@ import { ConfigService } from '@nestjs/config';
 import { TransactionEntity } from './domain/transaction.entity';
 import { TransactionReceiptEntity } from './domain/transaction-receipt.entity';
 import { LogEntity } from './domain/log.entity';
+import { BlockCount } from '../slack/dto/block.dto';
 
 @Injectable()
 export class BlockChainService {
@@ -106,6 +107,7 @@ export class BlockChainService {
   }
   async receiptRead(transactionHash: string): Promise<any> {
     try {
+      throw new Error('테스트용 에러');
       const findTransaction = await this.transactionRepository.findOne({
         where: { transactionHash },
       });
@@ -123,6 +125,7 @@ export class BlockChainService {
       return findReceipt;
     } catch (err) {
       console.error(err);
+      throw new InternalServerErrorException();
     }
   }
   async findReceiptByFromOrTo(option: string, address: string): Promise<any> {
@@ -153,5 +156,12 @@ export class BlockChainService {
       throw new NotFoundException();
     }
     return findReceipt;
+  }
+  async getBlockChainDataToCount(): Promise<BlockCount> {
+    const blockCnt: number = await this.blockRepository.count();
+    const receiptCnt: number = await this.receiptRepository.count();
+    const logCnt: number = await this.logRepository.count();
+    const data: BlockCount = new BlockCount(blockCnt, receiptCnt, logCnt);
+    return data;
   }
 }
